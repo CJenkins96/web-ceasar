@@ -9,9 +9,11 @@ form = """
     </head>
     <body>
     <form method="post">
+        <h1>Web Ceasar!</h1>
+        <div style="color:red;">%(rot_error)s</div>
         <label>Rotate by:</label>
-        <input type="number" name="rotation"><span style="color:red;">%(error)s</span>
-        <br>
+        <input type="number" name="rotation">
+        <div style="color:red;">%(msg_error)s</div>
         <label>Type a message:</label>
         <textarea name="message">%(encrypted)s</textarea>
 
@@ -22,8 +24,9 @@ form = """
 </html>
 """
 class MainHandler(webapp2.RequestHandler):
-    def write_form(self, encrypted = "", error = ""):    
-        self.response.write(form % {"error": error, "encrypted": encrypted})
+    def write_form(self, encrypted = "", rot_error = "", msg_error = ""):    
+        self.response.write(form % {"rot_error": rot_error, 
+                                    "msg_error": msg_error, "encrypted": encrypted})
 
     def get(self):
         self.write_form()
@@ -35,7 +38,7 @@ class MainHandler(webapp2.RequestHandler):
             encrypted_message = ceasar.encrypt(message, rotate)
             self.write_form(cgi.escape(encrypted_message))
         else:
-            self.write_form(message, "  That's not a valid number!")
+            self.write_form(message, "\tThat's not a valid number!")
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler)
